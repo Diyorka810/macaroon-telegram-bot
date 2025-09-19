@@ -1,0 +1,105 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "D:\\programming\\c#\\macaroon-telegram-bot\\Macaroon_bot\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{8CCC7504-6E28-4BE2-938E-AA9513B3C502}|Macaroon_bot\\Macaroon_bot.csproj|d:\\programming\\c#\\macaroon-telegram-bot\\macaroon_bot\\macaroon_bot\\properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{8CCC7504-6E28-4BE2-938E-AA9513B3C502}|Macaroon_bot\\Macaroon_bot.csproj|solutionrelative:macaroon_bot\\properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8CCC7504-6E28-4BE2-938E-AA9513B3C502}|Macaroon_bot\\Macaroon_bot.csproj|d:\\programming\\c#\\macaroon-telegram-bot\\macaroon_bot\\macaroon_bot\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{8CCC7504-6E28-4BE2-938E-AA9513B3C502}|Macaroon_bot\\Macaroon_bot.csproj|solutionrelative:macaroon_bot\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8CCC7504-6E28-4BE2-938E-AA9513B3C502}|Macaroon_bot\\Macaroon_bot.csproj|d:\\programming\\c#\\macaroon-telegram-bot\\macaroon_bot\\macaroon_bot\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8CCC7504-6E28-4BE2-938E-AA9513B3C502}|Macaroon_bot\\Macaroon_bot.csproj|solutionrelative:macaroon_bot\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8CCC7504-6E28-4BE2-938E-AA9513B3C502}|Macaroon_bot\\Macaroon_bot.csproj|d:\\programming\\c#\\macaroon-telegram-bot\\macaroon_bot\\macaroon_bot\\controllers\\userscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8CCC7504-6E28-4BE2-938E-AA9513B3C502}|Macaroon_bot\\Macaroon_bot.csproj|solutionrelative:macaroon_bot\\controllers\\userscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2B129EDB-2F6D-40F3-892F-AE3EA389D1F4}|Macaroon_bot.Model\\Macaroon_bot.Model.csproj|d:\\programming\\c#\\macaroon-telegram-bot\\macaroon_bot\\macaroon_bot.model\\applicationdb\\applicationdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2B129EDB-2F6D-40F3-892F-AE3EA389D1F4}|Macaroon_bot.Model\\Macaroon_bot.Model.csproj|solutionrelative:macaroon_bot.model\\applicationdb\\applicationdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "UsersController.cs",
+              "DocumentMoniker": "D:\\programming\\c#\\macaroon-telegram-bot\\Macaroon_bot\\Macaroon_bot\\Controllers\\UsersController.cs",
+              "RelativeDocumentMoniker": "Macaroon_bot\\Controllers\\UsersController.cs",
+              "ToolTip": "D:\\programming\\c#\\macaroon-telegram-bot\\Macaroon_bot\\Macaroon_bot\\Controllers\\UsersController.cs",
+              "RelativeToolTip": "Macaroon_bot\\Controllers\\UsersController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAfAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-19T06:48:34.359Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "launchSettings.json",
+              "DocumentMoniker": "D:\\programming\\c#\\macaroon-telegram-bot\\Macaroon_bot\\Macaroon_bot\\Properties\\launchSettings.json",
+              "RelativeDocumentMoniker": "Macaroon_bot\\Properties\\launchSettings.json",
+              "ToolTip": "D:\\programming\\c#\\macaroon-telegram-bot\\Macaroon_bot\\Macaroon_bot\\Properties\\launchSettings.json",
+              "RelativeToolTip": "Macaroon_bot\\Properties\\launchSettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAgAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2025-09-19T06:47:35.956Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "D:\\programming\\c#\\macaroon-telegram-bot\\Macaroon_bot\\Macaroon_bot\\appsettings.json",
+              "RelativeDocumentMoniker": "Macaroon_bot\\appsettings.json",
+              "ToolTip": "D:\\programming\\c#\\macaroon-telegram-bot\\Macaroon_bot\\Macaroon_bot\\appsettings.json",
+              "RelativeToolTip": "Macaroon_bot\\appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2025-09-19T06:46:23.317Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "ApplicationDBContext.cs",
+              "DocumentMoniker": "D:\\programming\\c#\\macaroon-telegram-bot\\Macaroon_bot\\Macaroon_bot.Model\\ApplicationDB\\ApplicationDBContext.cs",
+              "RelativeDocumentMoniker": "Macaroon_bot.Model\\ApplicationDB\\ApplicationDBContext.cs",
+              "ToolTip": "D:\\programming\\c#\\macaroon-telegram-bot\\Macaroon_bot\\Macaroon_bot.Model\\ApplicationDB\\ApplicationDBContext.cs",
+              "RelativeToolTip": "Macaroon_bot.Model\\ApplicationDB\\ApplicationDBContext.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-19T06:38:30.815Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Program.cs",
+              "DocumentMoniker": "D:\\programming\\c#\\macaroon-telegram-bot\\Macaroon_bot\\Macaroon_bot\\Program.cs",
+              "RelativeDocumentMoniker": "Macaroon_bot\\Program.cs",
+              "ToolTip": "D:\\programming\\c#\\macaroon-telegram-bot\\Macaroon_bot\\Macaroon_bot\\Program.cs",
+              "RelativeToolTip": "Macaroon_bot\\Program.cs",
+              "ViewState": "AgIAAAQAAAAAAAAAAAAwwBEAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-19T06:35:15.747Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
