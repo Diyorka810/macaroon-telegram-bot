@@ -19,5 +19,11 @@ namespace Macaroon_bot.Controllers
         {
             return Ok("ok");
         }
+
+        [HttpPost]
+        public IActionResult Post([FromQuery] string phoneNumber, string? password, string code)
+        {
+            return Ok("ok");
+        }
     }
 }
