@@ -14,6 +14,8 @@ namespace MacaroonBot.Model
 
         public string LastName { get; set; } = null!;
 
+        public string SurName { get; set; } = null!;
+
         public string PhoneNumber { get; set; } = null!;
 
         public string? TelegramId { get; set; }

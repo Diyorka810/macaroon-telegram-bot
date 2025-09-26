@@ -8,7 +8,7 @@ namespace MacaroonBot.Model
 {
     public interface IParentService
     {
-        Task<Parent> RegisterParentAsync(string firstName, string lastName, string phoneNumber, string telegramId);
+        Task<Parent> RegisterParentAsync(string firstName, string lastName, string surName, string phoneNumber, string telegramId);
         Task<Parent?> GetByTelegramIdAsync(string telegramId);
     }
 }

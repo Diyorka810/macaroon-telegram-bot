@@ -12,7 +12,7 @@ namespace MacaroonBot.Model
             _context = context;
         }
 
-        public async Task<Parent> RegisterParentAsync(string firstName, string lastName, string phoneNumber, string telegramId)
+        public async Task<Parent> RegisterParentAsync(string firstName, string lastName, string surName, string phoneNumber, string telegramId)
         {
             var existing = await _context.Parents
                 .FirstOrDefaultAsync(p => p.TelegramId == telegramId);
@@ -24,6 +24,7 @@ namespace MacaroonBot.Model
             {
                 FirstName = firstName,
                 LastName = lastName,
+                SurName = surName,
                 PhoneNumber = phoneNumber,
                 TelegramId = telegramId
             };
