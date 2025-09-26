@@ -31,12 +31,18 @@ namespace Macaroon_bot.Model
         {
             base.OnModelCreating(modelBuilder);
 
-            // Parent → Child (1 ко многим)
-            modelBuilder.Entity<Child>()
-                .HasOne(c => c.Parent)
-                .WithMany(p => p.Children)
-                .HasForeignKey(c => c.ParentId)
-                .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<ParentChild>()
+                .HasKey(pc => new { pc.ParentId, pc.ChildId });
+
+            modelBuilder.Entity<ParentChild>()
+                .HasOne(pc => pc.Parent)
+                .WithMany(p => p.ChildrenLink)
+                .HasForeignKey(pc => pc.ParentId);
+
+            modelBuilder.Entity<ParentChild>()
+                .HasOne(pc => pc.Child)
+                .WithMany(c => c.ParentsLink)
+                .HasForeignKey(pc => pc.ChildId);
 
             // Child → Group (многие к одному)
             modelBuilder.Entity<Child>()
