@@ -26,10 +26,11 @@ if (string.IsNullOrEmpty(token))
 }
 builder.Services.AddSingleton<ITelegramBotClient>(sp =>
     new TelegramBotClient(token));
-builder.Services.AddSingleton<ITelegramBotService, TelegramBotService>();
+builder.Services.AddScoped<ITelegramBotService, TelegramBotService>();
 
 // регистрируем бизнес сервисы
 builder.Services.AddScoped<IParentService, ParentService>();
+builder.Services.AddScoped<IRegistrationService, RegistrationService>();
 
 var app = builder.Build();
 
