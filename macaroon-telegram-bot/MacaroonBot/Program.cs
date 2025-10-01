@@ -1,24 +1,18 @@
 using Macaroon_bot.Model;
-using Macaroon_bot.Services;
 using MacaroonBot.Model;
-using MacaroonBot.Services;
 using Microsoft.EntityFrameworkCore;
 using Telegram.Bot;
-
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
 
-// подключаем БД
 builder.Services.AddDbContext<ApplicationDBContext>(options =>
-        options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
+    options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
 
-// контроллеры и сваггер
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// регистрируем телеграм-бота
 var token = configuration["TelegramBot:Token"];
 if (string.IsNullOrEmpty(token))
 {
@@ -26,10 +20,9 @@ if (string.IsNullOrEmpty(token))
 }
 builder.Services.AddSingleton<ITelegramBotClient>(sp =>
     new TelegramBotClient(token));
-builder.Services.AddScoped<ITelegramBotService, TelegramBotService>();
 
-// регистрируем бизнес сервисы
 builder.Services.AddScoped<IParentService, ParentService>();
+builder.Services.AddSingleton<RegistrationStateStore>();
 builder.Services.AddScoped<IRegistrationService, RegistrationService>();
 
 var app = builder.Build();
@@ -39,14 +32,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-app.Lifetime.ApplicationStarted.Register(() =>
-{
-    using var scope = app.Services.CreateScope();
-    var bot = scope.ServiceProvider.GetRequiredService<ITelegramBotService>();
-    var cts = new CancellationTokenSource();
-    _ = bot.StartAsync(cts.Token);
-});
 
 app.UseHttpsRedirection();
 app.UseAuthorization();

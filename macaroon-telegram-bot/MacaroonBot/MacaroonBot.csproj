@@ -24,7 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Macaroon_bot.Model\MacaroonBot.Model.csproj" />
+    <ProjectReference Include="..\MacaroonBot.Model\MacaroonBot.Model.csproj" />
   </ItemGroup>
 
 </Project>

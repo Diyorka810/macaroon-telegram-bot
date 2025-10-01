@@ -6,19 +6,17 @@ namespace MacaroonBot.Model
     public class RegistrationService : IRegistrationService
     {
         private readonly ApplicationDBContext _context;
-        private readonly Dictionary<long, RegistrationState> _states = new();
+        private readonly RegistrationStateStore _store;
 
-        public RegistrationService(ApplicationDBContext context)
+        public RegistrationService(ApplicationDBContext context, RegistrationStateStore store)
         {
             _context = context;
+            _store = store;
         }
 
         public async Task<string> HandleUpdateAsync(long chatId, string? text, Contact? contact)
         {
-            if (!_states.ContainsKey(chatId))
-                _states[chatId] = new RegistrationState();
-
-            var state = _states[chatId];
+            var state = _store.States.GetOrAdd(chatId, _ => new RegistrationState());
 
             switch (state.Step)
             {
@@ -42,11 +40,8 @@ namespace MacaroonBot.Model
                     return "Отправьте номер телефона или используйте кнопку для отправки контакта.";
 
                 case RegistrationStep.ParentPhone:
-                    if (contact != null)
-                        state.ParentPhone = contact.PhoneNumber;
-                    else if (!string.IsNullOrWhiteSpace(text))
-                        state.ParentPhone = text;
-                    else
+                    state.ParentPhone = contact?.PhoneNumber ?? text;
+                    if (string.IsNullOrEmpty(state.ParentPhone))
                         return "Введите номер телефона или отправьте контакт.";
 
                     state.Step = RegistrationStep.ChildName;
@@ -73,7 +68,6 @@ namespace MacaroonBot.Model
 
                     state.ChildBirthDate = dob;
 
-                    // --- Сохраняем в БД ---
                     var parent = new Parent
                     {
                         FirstName = state.ParentFirstName!,
@@ -99,14 +93,13 @@ namespace MacaroonBot.Model
                     _context.Parents.Add(parent);
                     await _context.SaveChangesAsync();
 
-                    // Чистим состояние
-                    _states.Remove(chatId);
+                    _store.States.TryRemove(chatId, out _);
 
-                    return $"Спасибо! Вы успешно записаны на пробное занятие. Мы свяжемся с вами для уточнения даты.";
+                    return "Спасибо! Вы успешно записаны на пробное занятие.";
 
                 default:
-                    _states.Remove(chatId); // сброс
-                    return "Что-то пошло не так. Давайте начнём регистрацию заново. Введите ваши ФИО.";
+                    _store.States.TryRemove(chatId, out _);
+                    return "Что-то пошло не так. Давайте начнём регистрацию заново.";
             }
         }
     }
