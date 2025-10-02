@@ -1,6 +1,7 @@
 ﻿using Macaroon_bot.Model;
 using Microsoft.EntityFrameworkCore;
 using Telegram.Bot.Types;
+using Telegram.Bot.Types.ReplyMarkups;
 
 namespace MacaroonBot.Model
 {
@@ -15,7 +16,7 @@ namespace MacaroonBot.Model
             _store = store;
         }
 
-        public async Task<bool> CheckUserAsync(long chatId)
+        public async Task<bool> IsUserRegistered(long chatId)
         {
             var telegramId = chatId.ToString();
 
@@ -23,7 +24,12 @@ namespace MacaroonBot.Model
                 .AnyAsync(p => p.TelegramId == telegramId);
         }
 
-        public async Task<string> HandleUpdateAsync(long chatId, string? text, Contact? contact)
+        public void ClearState()
+        {
+            _store.States.Clear();
+        }
+
+        public async Task<(ReplyKeyboardMarkup?, string)> RegisterAsync(long chatId, string? text, Contact? contact)
         {
             var state = _store.States.GetOrAdd(chatId, _ => new RegistrationState());
 
@@ -31,49 +37,61 @@ namespace MacaroonBot.Model
             {
                 case RegistrationStep.Start:
                     state.Step = RegistrationStep.ParentName;
-                    return "Здравствуйте! Введите ваши ФИО полностью (пример: Иванов Иван Иванович).";
+                    return (null, "Здравствуйте! Введите ваши ФИО полностью (пример: Иванов Иван Иванович).");
 
                 case RegistrationStep.ParentName:
                     if (string.IsNullOrWhiteSpace(text))
-                        return "Пожалуйста, введите ФИО полностью.";
+                        return (null, "Пожалуйста, введите ФИО полностью.");
 
                     var parentParts = text.Split(' ', StringSplitOptions.RemoveEmptyEntries);
                     if (parentParts.Length < 3)
-                        return "ФИО должно содержать фамилию, имя и отчество.";
+                        return (null, "ФИО должно содержать фамилию, имя и отчество.");
 
                     state.ParentLastName = parentParts[0];
                     state.ParentFirstName = parentParts[1];
                     state.ParentSurName = parentParts[2];
                     state.Step = RegistrationStep.ParentPhone;
 
-                    return "Отправьте номер телефона или используйте кнопку для отправки контакта.";
+                    var phoneKeyboard = new ReplyKeyboardMarkup(new[]
+                    {
+                        new[]
+                        {
+                            new KeyboardButton("Отправить номер телефона") { RequestContact = true }
+                        }
+                    })
+                    {
+                        ResizeKeyboard = true,
+                        OneTimeKeyboard = true
+                    };
+
+                    return (phoneKeyboard, "Пожалуйста, отправьте свой номер телефона.");
 
                 case RegistrationStep.ParentPhone:
                     state.ParentPhone = contact?.PhoneNumber ?? text;
                     if (string.IsNullOrEmpty(state.ParentPhone))
-                        return "Введите номер телефона или отправьте контакт.";
+                        return (null, "Введите номер телефона или отправьте контакт.");
 
                     state.Step = RegistrationStep.ChildName;
-                    return "Введите ФИО ребёнка полностью (пример: Петров Пётр Петрович).";
+                    return (null, "Введите ФИО ребёнка полностью (пример: Петров Пётр Петрович).");
 
                 case RegistrationStep.ChildName:
                     if (string.IsNullOrWhiteSpace(text))
-                        return "Пожалуйста, введите ФИО ребёнка.";
+                        return (null, "Пожалуйста, введите ФИО ребёнка.");
 
                     var childParts = text.Split(' ', StringSplitOptions.RemoveEmptyEntries);
                     if (childParts.Length < 3)
-                        return "ФИО ребёнка должно содержать фамилию, имя и отчество.";
+                        return (null, "ФИО ребёнка должно содержать фамилию, имя и отчество.");
 
                     state.ChildLastName = childParts[0];
                     state.ChildFirstName = childParts[1];
                     state.ChildSurName = childParts[2];
                     state.Step = RegistrationStep.ChildBirthDate;
 
-                    return "Укажите дату рождения ребёнка (пример: 01.03.2020).";
+                    return (null, "Укажите дату рождения ребёнка (пример: 01.03.2020).");
 
                 case RegistrationStep.ChildBirthDate:
                     if (!DateTime.TryParse(text, out var dob))
-                        return "Некорректный формат даты. Попробуйте снова (пример: 01.03.2020).";
+                        return (null, "Некорректный формат даты. Попробуйте снова (пример: 01.03.2020).");
 
                     state.ChildBirthDate = dob;
 
@@ -105,11 +123,20 @@ namespace MacaroonBot.Model
 
                     _store.States.TryRemove(chatId, out _);
 
-                    return "Спасибо! Вы успешно записаны на пробное занятие.";
+                    var keyBoard = new ReplyKeyboardMarkup(
+                        [
+                            new[] { new KeyboardButton("Меню")},
+                        ]
+                    )
+                    {
+                        ResizeKeyboard = true
+                    };
+
+                    return (keyBoard, "Спасибо! Вы успешно записаны на пробное занятие.");
 
                 default:
                     _store.States.TryRemove(chatId, out _);
-                    return "Что-то пошло не так. Давайте начнём регистрацию заново.";
+                    return (null, "Что-то пошло не так. Давайте начнём регистрацию заново.");
             }
         }
     }

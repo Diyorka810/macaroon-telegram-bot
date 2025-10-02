@@ -23,6 +23,8 @@ builder.Services.AddSingleton<ITelegramBotClient>(sp =>
     new TelegramBotClient(token));
 
 builder.Services.AddScoped<IParentService, ParentService>();
+builder.Services.AddScoped<IMenuService, MenuService>();
+builder.Services.AddScoped<ITelegramService, TelegramService>();
 builder.Services.AddSingleton<RegistrationStateStore>();
 builder.Services.AddScoped<IRegistrationService, RegistrationService>();
 

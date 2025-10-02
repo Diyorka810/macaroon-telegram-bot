@@ -29,8 +29,10 @@ namespace Macaroon_bot.Controllers
         }
 
         [HttpDelete]
-        public async Task<IActionResult> Delete([FromQuery] string telegramId)
+        public async Task<IActionResult> Delete()
         {
+            var telegramId = "28707540";
+
             var parent = await _context.Parents
                 .Include(p => p.Children)
                 .Include(p => p.Payments)
