@@ -1,4 +1,5 @@
 ﻿using Macaroon_bot.Model;
+using Microsoft.EntityFrameworkCore;
 using Telegram.Bot.Types;
 
 namespace MacaroonBot.Model
@@ -12,6 +13,14 @@ namespace MacaroonBot.Model
         {
             _context = context;
             _store = store;
+        }
+
+        public async Task<bool> CheckUserAsync(long chatId)
+        {
+            var telegramId = chatId.ToString();
+
+            return await _context.Parents
+                .AnyAsync(p => p.TelegramId == telegramId);
         }
 
         public async Task<string> HandleUpdateAsync(long chatId, string? text, Contact? contact)
@@ -83,6 +92,7 @@ namespace MacaroonBot.Model
                     {
                         FirstName = state.ChildFirstName!,
                         LastName = state.ChildLastName!,
+                        SurName = state.ChildSurName!,
                         DateOfBirth = DateOnly.FromDateTime(state.ChildBirthDate!.Value),
                         CreatedAt = DateTime.UtcNow,
                         UpdatedAt = DateTime.UtcNow
