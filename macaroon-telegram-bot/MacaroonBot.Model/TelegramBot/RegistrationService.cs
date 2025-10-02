@@ -83,7 +83,7 @@ namespace MacaroonBot.Model
                     {
                         FirstName = state.ChildFirstName!,
                         LastName = state.ChildLastName!,
-                        DateOfBirth = state.ChildBirthDate!.Value,
+                        DateOfBirth = DateOnly.FromDateTime(state.ChildBirthDate!.Value),
                         CreatedAt = DateTime.UtcNow,
                         UpdatedAt = DateTime.UtcNow
                     };

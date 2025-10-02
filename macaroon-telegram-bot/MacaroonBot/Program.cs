@@ -7,7 +7,8 @@ var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
 
 builder.Services.AddDbContext<ApplicationDBContext>(options =>
-    options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
+    options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"),
+        b => b.MigrationsAssembly("MacaroonBot.Model")));
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
