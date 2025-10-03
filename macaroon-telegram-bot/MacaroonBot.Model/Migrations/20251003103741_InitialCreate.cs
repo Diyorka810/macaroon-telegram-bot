@@ -13,6 +13,23 @@ namespace MacaroonBot.Model.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "Activity",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: true),
+                    Price = table.Column<decimal>(type: "numeric", nullable: false),
+                    Duration = table.Column<TimeSpan>(type: "interval", nullable: false),
+                    IsSubscription = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Activity", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "OwnerReports",
                 columns: table => new
                 {
@@ -38,6 +55,7 @@ namespace MacaroonBot.Model.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     FirstName = table.Column<string>(type: "text", nullable: false),
                     LastName = table.Column<string>(type: "text", nullable: false),
+                    SurName = table.Column<string>(type: "text", nullable: false),
                     PhoneNumber = table.Column<string>(type: "text", nullable: false),
                     TelegramId = table.Column<string>(type: "text", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
@@ -73,7 +91,7 @@ namespace MacaroonBot.Model.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "text", nullable: false),
-                    Level = table.Column<string>(type: "text", nullable: true),
+                    ActivityId = table.Column<int>(type: "integer", nullable: false),
                     TeacherId = table.Column<int>(type: "integer", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
@@ -81,6 +99,12 @@ namespace MacaroonBot.Model.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Groups", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Groups_Activity_ActivityId",
+                        column: x => x.ActivityId,
+                        principalTable: "Activity",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Groups_Staff_TeacherId",
                         column: x => x.TeacherId,
@@ -120,8 +144,8 @@ namespace MacaroonBot.Model.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     FirstName = table.Column<string>(type: "text", nullable: false),
                     LastName = table.Column<string>(type: "text", nullable: false),
-                    DateOfBirth = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    ParentId = table.Column<int>(type: "integer", nullable: false),
+                    SurName = table.Column<string>(type: "text", nullable: false),
+                    DateOfBirth = table.Column<DateOnly>(type: "date", nullable: false),
                     GroupId = table.Column<int>(type: "integer", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
@@ -135,12 +159,6 @@ namespace MacaroonBot.Model.Migrations
                         principalTable: "Groups",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.SetNull);
-                    table.ForeignKey(
-                        name: "FK_Children_Parents_ParentId",
-                        column: x => x.ParentId,
-                        principalTable: "Parents",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -173,6 +191,55 @@ namespace MacaroonBot.Model.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ChildParent",
+                columns: table => new
+                {
+                    ChildrenId = table.Column<int>(type: "integer", nullable: false),
+                    ParentsId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ChildParent", x => new { x.ChildrenId, x.ParentsId });
+                    table.ForeignKey(
+                        name: "FK_ChildParent_Children_ChildrenId",
+                        column: x => x.ChildrenId,
+                        principalTable: "Children",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ChildParent_Parents_ParentsId",
+                        column: x => x.ParentsId,
+                        principalTable: "Parents",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ParentChild",
+                columns: table => new
+                {
+                    ParentId = table.Column<int>(type: "integer", nullable: false),
+                    ChildId = table.Column<int>(type: "integer", nullable: false),
+                    LinkedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ParentChild", x => new { x.ParentId, x.ChildId });
+                    table.ForeignKey(
+                        name: "FK_ParentChild_Children_ChildId",
+                        column: x => x.ChildId,
+                        principalTable: "Children",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ParentChild_Parents_ParentId",
+                        column: x => x.ParentId,
+                        principalTable: "Parents",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Payments",
                 columns: table => new
                 {
@@ -180,6 +247,7 @@ namespace MacaroonBot.Model.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     ParentId = table.Column<int>(type: "integer", nullable: false),
                     ChildId = table.Column<int>(type: "integer", nullable: false),
+                    ActivityId = table.Column<int>(type: "integer", nullable: false),
                     Amount = table.Column<decimal>(type: "numeric", nullable: false),
                     PaymentDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     PaymentMethod = table.Column<string>(type: "text", nullable: false),
@@ -188,6 +256,12 @@ namespace MacaroonBot.Model.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Payments", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Payments_Activity_ActivityId",
+                        column: x => x.ActivityId,
+                        principalTable: "Activity",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Payments_Children_ChildId",
                         column: x => x.ChildId,
@@ -210,16 +284,24 @@ namespace MacaroonBot.Model.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     GroupId = table.Column<int>(type: "integer", nullable: true),
                     ChildId = table.Column<int>(type: "integer", nullable: true),
-                    ActivityType = table.Column<string>(type: "text", nullable: false),
-                    StartTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    EndTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    Recurring = table.Column<string>(type: "text", nullable: false),
+                    Type = table.Column<string>(type: "text", nullable: false),
+                    DayOfWeek = table.Column<int>(type: "integer", nullable: true),
+                    StartTime = table.Column<TimeSpan>(type: "interval", nullable: true),
+                    EndTime = table.Column<TimeSpan>(type: "interval", nullable: true),
+                    StartDateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    EndDateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    ActivityId = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Schedules", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Schedules_Activity_ActivityId",
+                        column: x => x.ActivityId,
+                        principalTable: "Activity",
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Schedules_Children_ChildId",
                         column: x => x.ChildId,
@@ -243,14 +325,19 @@ namespace MacaroonBot.Model.Migrations
                 column: "StaffId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ChildParent_ParentsId",
+                table: "ChildParent",
+                column: "ParentsId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Children_GroupId",
                 table: "Children",
                 column: "GroupId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Children_ParentId",
-                table: "Children",
-                column: "ParentId");
+                name: "IX_Groups_ActivityId",
+                table: "Groups",
+                column: "ActivityId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Groups_TeacherId",
@@ -263,6 +350,16 @@ namespace MacaroonBot.Model.Migrations
                 column: "CreatedById");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ParentChild_ChildId",
+                table: "ParentChild",
+                column: "ChildId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Payments_ActivityId",
+                table: "Payments",
+                column: "ActivityId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Payments_ChildId",
                 table: "Payments",
                 column: "ChildId");
@@ -271,6 +368,11 @@ namespace MacaroonBot.Model.Migrations
                 name: "IX_Payments_ParentId",
                 table: "Payments",
                 column: "ParentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Schedules_ActivityId",
+                table: "Schedules",
+                column: "ActivityId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Schedules_ChildId",
@@ -290,10 +392,16 @@ namespace MacaroonBot.Model.Migrations
                 name: "Attendances");
 
             migrationBuilder.DropTable(
+                name: "ChildParent");
+
+            migrationBuilder.DropTable(
                 name: "Notifications");
 
             migrationBuilder.DropTable(
                 name: "OwnerReports");
+
+            migrationBuilder.DropTable(
+                name: "ParentChild");
 
             migrationBuilder.DropTable(
                 name: "Payments");
@@ -302,13 +410,16 @@ namespace MacaroonBot.Model.Migrations
                 name: "Schedules");
 
             migrationBuilder.DropTable(
+                name: "Parents");
+
+            migrationBuilder.DropTable(
                 name: "Children");
 
             migrationBuilder.DropTable(
                 name: "Groups");
 
             migrationBuilder.DropTable(
-                name: "Parents");
+                name: "Activity");
 
             migrationBuilder.DropTable(
                 name: "Staff");

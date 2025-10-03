@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace MacaroonBot.Model
+﻿namespace MacaroonBot.Model
 {
     public class Payment
     {
@@ -16,6 +10,9 @@ namespace MacaroonBot.Model
         public int ChildId { get; set; }
         public Child Child { get; set; } = null!;
 
+        public int ActivityId { get; set; }
+        public Activity Activity { get; set; } = null!;
+
         public decimal Amount { get; set; }
 
         public DateTime PaymentDate { get; set; }
@@ -24,4 +21,5 @@ namespace MacaroonBot.Model
 
         public string Status { get; set; } = "Paid"; // Paid, Pending, Overdue
     }
+
 }

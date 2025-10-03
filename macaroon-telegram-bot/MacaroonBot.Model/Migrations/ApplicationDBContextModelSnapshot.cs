@@ -37,6 +37,35 @@ namespace MacaroonBot.Model.Migrations
                     b.ToTable("ChildParent");
                 });
 
+            modelBuilder.Entity("MacaroonBot.Model.Activity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<TimeSpan>("Duration")
+                        .HasColumnType("interval");
+
+                    b.Property<bool>("IsSubscription")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("numeric");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Activity");
+                });
+
             modelBuilder.Entity("MacaroonBot.Model.Attendance", b =>
                 {
                     b.Property<int>("Id")
@@ -117,11 +146,11 @@ namespace MacaroonBot.Model.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("ActivityId")
+                        .HasColumnType("integer");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Level")
-                        .HasColumnType("text");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -134,6 +163,8 @@ namespace MacaroonBot.Model.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ActivityId");
 
                     b.HasIndex("TeacherId");
 
@@ -268,6 +299,9 @@ namespace MacaroonBot.Model.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("ActivityId")
+                        .HasColumnType("integer");
+
                     b.Property<decimal>("Amount")
                         .HasColumnType("numeric");
 
@@ -290,6 +324,8 @@ namespace MacaroonBot.Model.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ActivityId");
+
                     b.HasIndex("ChildId");
 
                     b.HasIndex("ParentId");
@@ -305,9 +341,8 @@ namespace MacaroonBot.Model.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("ActivityType")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<int?>("ActivityId")
+                        .HasColumnType("integer");
 
                     b.Property<int?>("ChildId")
                         .HasColumnType("integer");
@@ -315,23 +350,34 @@ namespace MacaroonBot.Model.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<DateTime>("EndTime")
+                    b.Property<int?>("DayOfWeek")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("EndDateTime")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<TimeSpan?>("EndTime")
+                        .HasColumnType("interval");
 
                     b.Property<int?>("GroupId")
                         .HasColumnType("integer");
 
-                    b.Property<string>("Recurring")
+                    b.Property<DateTime?>("StartDateTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<TimeSpan?>("StartTime")
+                        .HasColumnType("interval");
+
+                    b.Property<string>("Type")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<DateTime>("StartTime")
-                        .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ActivityId");
 
                     b.HasIndex("ChildId");
 
@@ -420,10 +466,18 @@ namespace MacaroonBot.Model.Migrations
 
             modelBuilder.Entity("MacaroonBot.Model.Group", b =>
                 {
+                    b.HasOne("MacaroonBot.Model.Activity", "Activity")
+                        .WithMany("Groups")
+                        .HasForeignKey("ActivityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("MacaroonBot.Model.Staff", "Teacher")
                         .WithMany("Groups")
                         .HasForeignKey("TeacherId")
                         .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("Activity");
 
                     b.Navigation("Teacher");
                 });
@@ -460,6 +514,12 @@ namespace MacaroonBot.Model.Migrations
 
             modelBuilder.Entity("MacaroonBot.Model.Payment", b =>
                 {
+                    b.HasOne("MacaroonBot.Model.Activity", "Activity")
+                        .WithMany()
+                        .HasForeignKey("ActivityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("MacaroonBot.Model.Child", "Child")
                         .WithMany()
                         .HasForeignKey("ChildId")
@@ -472,6 +532,8 @@ namespace MacaroonBot.Model.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("Activity");
+
                     b.Navigation("Child");
 
                     b.Navigation("Parent");
@@ -479,6 +541,10 @@ namespace MacaroonBot.Model.Migrations
 
             modelBuilder.Entity("MacaroonBot.Model.Schedule", b =>
                 {
+                    b.HasOne("MacaroonBot.Model.Activity", null)
+                        .WithMany("Schedules")
+                        .HasForeignKey("ActivityId");
+
                     b.HasOne("MacaroonBot.Model.Child", "Child")
                         .WithMany("IndividualSchedules")
                         .HasForeignKey("ChildId");
@@ -490,6 +556,13 @@ namespace MacaroonBot.Model.Migrations
                     b.Navigation("Child");
 
                     b.Navigation("Group");
+                });
+
+            modelBuilder.Entity("MacaroonBot.Model.Activity", b =>
+                {
+                    b.Navigation("Groups");
+
+                    b.Navigation("Schedules");
                 });
 
             modelBuilder.Entity("MacaroonBot.Model.Child", b =>
