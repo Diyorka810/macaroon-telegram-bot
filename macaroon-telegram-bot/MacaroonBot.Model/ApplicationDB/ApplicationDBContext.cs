@@ -8,6 +8,8 @@ namespace Macaroon_bot.Model
         public ApplicationDBContext() { }
         public ApplicationDBContext(DbContextOptions<ApplicationDBContext> options) : base(options) { }
 
+        // Активности
+        public DbSet<Activity> Activities { get; set; }
         // Родители
         public DbSet<Parent> Parents { get; set; }
         // Дети
@@ -26,6 +28,8 @@ namespace Macaroon_bot.Model
         public DbSet<Notification> Notifications { get; set; }
         // Отчёты
         public DbSet<OwnerReport> OwnerReports { get; set; }
+        // Связка Родитель ↔ Ребёнок (многие ко многим)
+        public DbSet<ParentChild> ParentChildren { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -72,17 +76,25 @@ namespace Macaroon_bot.Model
                 .HasForeignKey(a => a.StaffId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // Payment → Parent + Child
+            // Payment → Parent
             modelBuilder.Entity<Payment>()
                 .HasOne(p => p.Parent)
                 .WithMany(pr => pr.Payments)
                 .HasForeignKey(p => p.ParentId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            // Payment → Child
             modelBuilder.Entity<Payment>()
                 .HasOne(p => p.Child)
                 .WithMany()
                 .HasForeignKey(p => p.ChildId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Payment → Activity
+            modelBuilder.Entity<Payment>()
+                .HasOne(p => p.Activity)
+                .WithMany()
+                .HasForeignKey(p => p.ActivityId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             // Notification → Staff
